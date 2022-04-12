@@ -45,7 +45,9 @@ public class FunctionalTest {
         for (int i = 0; i < buttons.size(); i++) {
             if (buttons.get(i).getCssValue("background-color").contains("rgba(0, 130, 148, 1)")){
                 WebElement button = buttons.get(i);
-                assertTrue(button.getText() == "Rejoindre Meetup" && button.getAttribute("href") == "https://www.meetup.com/fr-FR/register/");
+                System.out.println(button.getText());
+                assertTrue(button.getText().contains("Rejoindre Meetup" )) ;
+                assertTrue(button.getAttribute("href").contains("https://www.meetup.com/fr-FR/register/"));
                 i = buttons.size();
             }
         }
