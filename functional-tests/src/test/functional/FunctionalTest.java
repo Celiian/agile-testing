@@ -17,6 +17,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 
+import org.openqa.selenium.support.ui.Select;
+
 public class FunctionalTest {
 
 	private WebDriver driver;
@@ -55,6 +57,46 @@ public class FunctionalTest {
 
     @Test
     public void testRecherche() throws Exception {
+        driver.get("https://www.meetup.com/fr-FR/find/?source=EVENTS&categoryId=546");
+        assertTrue(driver.findElement(By.cssSelector("h1")).getText().contains("Événements Technologie suggérés à proximité de"));
+
+        List<WebElement> buttons = driver.findElements(By.cssSelector("button"));
+        List<WebElement> allCardsPertinence = driver.findElements(By.cssSelector("div[data-testid='categoryResults-eventCard']"));
+        int buttonNumber = 4;
+        for (int i = 0; i < buttons.size(); i++) {
+            if(buttons.get(i).getText().contains("N'importe quand") || buttons.get(i).getText().contains("Tous les types") ||  buttons.get(i).getText().contains("Technologie")){
+                buttonNumber = buttonNumber - 1;
+            }
+            else if (buttons.get(i).getText().contains("Trier par :")) {
+                assertTrue(buttons.get(i).getText().contains("Pertinence"));
+                WebElement button = buttons.get(i);
+                button.click();
+                for (int y = i; y < buttons.size(); y++) {
+                    if (buttons.get(y).getText().contains("Date")) {
+                        WebElement buttonDate = buttons.get(y);
+                        buttonDate.click();
+                        List<WebElement> allCardsDate = driver.findElements(By.cssSelector("div[data-testid='categoryResults-eventCard']"));
+                        assertNotEquals(allCardsPertinence, allCardsDate);
+                        y = buttons.size();
+                    }
+                }
+            }
+            else if (buttons.get(i).getText().contains("N'importe où")) {
+                buttonNumber = buttonNumber - 1;
+                buttons.get(i).click();
+                WebElement button = driver.findElement(By.id("event-distance-5-miles-option"));
+                button.click();
+                List<WebElement> allCards10km = driver.findElements(By.cssSelector("div[data-testid='categoryResults-eventCard']"));
+                assertNotEquals(allCardsPertinence, allCards10km);
+
+            }
+        }
+        assertEquals(0, buttonNumber);
+
+
+
+
+
 
     }
 
